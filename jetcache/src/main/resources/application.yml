@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+
+spring:
+  #redis setting
+  redis:
+    host:
+    port: 6379
+  datasource:
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql:///normaltest?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+
+#jetcache setting
+jetcache:
+#  statistical space times
+  statIntervalMinutes: 15
+  # refresh synchronization data with old product ,but you should setting false in new product
+  areaInCacheName: false
+#   package short write to save key
+#  hidePackages: com.alibaba
+  local:
+    default:
+#      data type
+      type: caffeine
+#      only one now
+      keyConvertor: fastjson
+#      max limit
+      limit: 100
+    otherArea:
+      type: linkedhashmap
+      limit: 100
+      keyConvertor: none
+      expireAfterWriteInMillis: 100000
+
+  remote:
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: ${spring.redis.host}
+      port: ${spring.redis.port}
+logging:
+  level:
+    com.lzc.jetcache.dao: debug
