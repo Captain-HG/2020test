@@ -16,7 +16,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.jason.seckill.order.mapper" level="DEBUG"/>
+    <logger name="com.lzc.spikeordermq.dao" level="DEBUG"/>
 
     <root level="info">
         <appender-ref ref="CONSOLE" />

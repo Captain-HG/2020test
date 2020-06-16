@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PayServiceImpl implements PayService {
     @Override
-    public void confirmPay(String orderId) {
+    public void confirmPay(String orderId) throws Exception {
 
+      throw new Exception("13213");
     }
 }

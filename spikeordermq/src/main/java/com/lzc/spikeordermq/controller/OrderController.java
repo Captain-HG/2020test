@@ -4,6 +4,8 @@ import com.lzc.spikeordermq.common.CommonValue;
 import com.lzc.spikeordermq.common.Dict;
 import com.lzc.spikeordermq.config.JedisConfig;
 import com.lzc.spikeordermq.config.JedisLock;
+import com.lzc.spikeordermq.service.OrderService;
+import com.lzc.spikeordermq.service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,16 +25,33 @@ public class OrderController {
 
     @Autowired
     JedisLock JedisLock;
+    @Autowired
+    UserOrderService userOrderService;
+    @Autowired
+    OrderService orderService;
 
     @Value("${redis.top.key}")
     String redisTopLey;
 
-    @RequestMapping("/test01/{userId}/{requestId}")
-    public boolean test01(@PathVariable(name = "userId") String userId,@PathVariable(name = "requestId") String requestId){
+    /**
+     * 下单
+     * @param userId
+     * @param requestId
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping("/test01/{userId}/{requestId}/{goodsId}")
+    public boolean test01(@PathVariable(name = "userId") String userId,@PathVariable(name = "requestId") String requestId,@PathVariable(name = "goodsId") String goodsId){
         Map map = new HashMap();
         map.put(Dict.STATUS, CommonValue.REDIS_SAVE_STATUS_1);
         map.put(Dict.REQUESTID, requestId);
-        return JedisLock.setnx(redisTopLey+userId+requestId,map.toString(),20000);
+        boolean b = JedisLock.setnx(redisTopLey + userId + requestId, map.toString(), 20000);
+        if(b){
+            map.put("userid",userId);
+            map.put("goodsId",goodsId);
+            userOrderService.seckill(map);
+        }
+        return  b;
     }
 
     @RequestMapping("/test02/{userId}/{requestId}")
@@ -42,4 +61,26 @@ public class OrderController {
         map.put(Dict.REQUESTID, requestId);
         return JedisLock.delnx(redisTopLey+userId+requestId,map.toString());
     }
+
+    @RequestMapping("/test03/{userId}/{requestId}/{goodsId}")
+    public String test03(@PathVariable(name = "userId") String userId,@PathVariable(name = "requestId") String requestId,@PathVariable(name = "goodsId") String goodsId){
+        orderService.order(userId,goodsId);
+        return "ok";
+    }
+
+    /**
+     * 去支付，增加死信队列交换机，设置支付时间，
+     * @param orderId 订单号
+     * @return
+     */
+    @RequestMapping("/test04/{orderId}")
+    public String test04(@PathVariable(name = "orderId") String orderId){
+        //发送支付消息队列信息
+        Map map = new HashMap();
+        map.put(Dict.ORDERID,orderId);
+        userOrderService.payMsg(map);
+        return "ok";
+    }
+
+
 }

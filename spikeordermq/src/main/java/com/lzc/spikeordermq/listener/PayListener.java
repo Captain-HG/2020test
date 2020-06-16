@@ -3,6 +3,7 @@ package com.lzc.spikeordermq.listener;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import com.lzc.spikeordermq.common.Dict;
 import com.lzc.spikeordermq.service.PayService;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
@@ -27,9 +28,9 @@ public class PayListener implements ChannelAwareMessageListener {
             String str = new String(message.getBody(), "utf-8");
             logger.info("接收到的消息：{}",str);
             JSONObject json = JSON.parseObject(str);
-            String orderId = json.getString("id");
+            String orderId = json.getString(Dict.ORDERID);
             payService.confirmPay(orderId);
-            channel.basicAck(tag, true);
+            channel.basicAck(tag, false);
         }catch(Exception e){
             logger.info("支付消息消费出错：{}",e.getMessage());
             logger.info("出错的tag:{}",tag);

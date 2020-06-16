@@ -6,5 +6,5 @@ package com.lzc.spikeordermq.service;
  * @Description
  */
 public interface PayService {
-    void confirmPay(String orderId);
+    void confirmPay(String orderId) throws Exception;
 }

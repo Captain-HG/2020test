@@ -52,7 +52,8 @@ public class OrderRabbitmqConfig {
     @Bean
     public RabbitTemplate rabbitTemplate(){
         //消息发送成功确认，对应application.properties中的spring.rabbitmq.publisher-confirms=true
-        connectionFactory.setPublisherConfirms(true);
+//        connectionFactory.setPublisherConfirms(true);
+        connectionFactory.setPublisherReturns(true);
         //消息发送失败确认，对应application.properties中的spring.rabbitmq.publisher-returns=true
         connectionFactory.setPublisherReturns(true);
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
@@ -132,7 +133,7 @@ public class OrderRabbitmqConfig {
     }
 
 
-    //--------------------------------------------支付队列-------------------------------------------------
+    //--------------------------------------------死信队列-------------------------------------------------
 
     /**
      * 死信队列：也叫延迟队列，可以设置队列中的消息过期时间
@@ -159,21 +160,35 @@ public class OrderRabbitmqConfig {
     }
 
     /**
+     * 死信交换机
+     * @return
+     */
+    @Bean
+    public TopicExchange payDeadLetterExchange(){
+        return new TopicExchange(env.getProperty("pay.dead-letter.mq.exchange.name"),true,false);
+    }
+
+
+    /**
+     * 死信队列与死信交换机绑定
+     * @return
+     */
+    @Bean
+    public Binding PayDeadBind(){
+        return BindingBuilder.bind(payDeadLetterQueue()).to(payDeadLetterExchange()).with(env.getProperty("pay.dead-letter.mq.exchange.name"));
+    }
+
+
+    //--------------------------------------------支付队列-------------------------------------------------
+
+
+    /**
      * 支付队列交换机（主交换机）
      * @return
      */
     @Bean
     public TopicExchange payTopicExchange(){
         return new TopicExchange(env.getProperty("pay.mq.exchange.name"),true,false);
-    }
-
-    /**
-     * 将主交换机绑定到死信队列
-     * @return
-     */
-    @Bean
-    public Binding payBinding(){
-        return BindingBuilder.bind(payDeadLetterQueue()).to(payTopicExchange()).with(env.getProperty("pay.mq.routing.key"));
     }
 
     /**
@@ -186,16 +201,16 @@ public class OrderRabbitmqConfig {
     }
 
     /**
-     * 死信交换机
+     * 将主交换机绑定到支付队列（死信队列）
      * @return
      */
     @Bean
-    public TopicExchange payDeadLetterExchange(){
-        return new TopicExchange(env.getProperty("pay.dead-letter.mq.exchange.name"),true,false);
+    public Binding payBinding(){
+        return BindingBuilder.bind(payQueue()).to(payTopicExchange()).with(env.getProperty("pay.mq.routing.key"));
     }
 
     /**
-     * 将主队列绑定到死信交换机
+     * 将主队列绑定到死信交换机（对应失败的key）
      * @return
      */
     @Bean

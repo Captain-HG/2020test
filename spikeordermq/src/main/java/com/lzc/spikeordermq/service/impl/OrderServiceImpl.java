@@ -26,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("id",Long.toString(idWorker.nextId()));
         map.put("userId",userId);
         map.put("goodsId",goodsId);
+        map.put("payStatus", "1");
         orderDao.insertOrderRecord(map);
     }
 }

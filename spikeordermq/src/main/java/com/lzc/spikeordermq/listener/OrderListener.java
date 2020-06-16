@@ -38,6 +38,7 @@ public class OrderListener implements ChannelAwareMessageListener {
             //下单，操作数据库
             orderService.order(obj.getString("userId"),obj.getString("goodsId"));
             //确认消费
+            
             channel.basicAck(tag,true);
         }catch(Exception e){
             logger.error("消息监听确认机制发生异常：",e.fillInStackTrace());

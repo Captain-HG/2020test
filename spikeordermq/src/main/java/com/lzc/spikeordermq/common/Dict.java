@@ -14,4 +14,8 @@ public class Dict {
      * 请求id
      */
     public static final String REQUESTID = "requestId";
+    /**
+     * 订单id
+     */
+    public static final String ORDERID = "orderId";
 }
