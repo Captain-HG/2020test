@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Description
  */
 @SpringBootApplication
-@MapperScan(value = "com.lzc.spikeordermq.dao")
+@MapperScan(value = "com.com.lzc.spikeordermq.dao")
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

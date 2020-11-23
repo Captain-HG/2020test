@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.lzc.spikeordermq.dao.OrderDao">
+<mapper namespace="com.com.lzc.spikeordermq.dao.OrderDao">
 
     <sql id="Goods_Info_Column_List">
         id,goods_name as goodsName,goods_stock as goodsStock
@@ -22,13 +22,13 @@
         values(#{id},#{userId},#{goodsId},#{payStatus},SYSDATE(),SYSDATE())
     </insert>
 
-    <update id="updatePayStatus" parameterType="com.lzc.spikeordermq.entiy.OrderRecord">
+    <update id="updatePayStatus" parameterType="com.com.lzc.spikeordermq.entiy.OrderRecord">
         update order_record
         set pay_status = #{payStatus},update_time=SYSDATE()
         where id = #{id}
     </update>
 
-    <select id="selectNoPayOrderById" resultType="com.lzc.spikeordermq.entiy.OrderRecord">
+    <select id="selectNoPayOrderById" resultType="com.com.lzc.spikeordermq.entiy.OrderRecord">
         select <include refid="Order_Record_Column_List"></include>
         from order_record
         where id = #{orderId} and pay_status = 2

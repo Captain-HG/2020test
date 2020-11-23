@@ -42,4 +42,8 @@ public class GoodsInfo {
                 ", goodsStock='" + goodsStock + '\'' +
                 '}';
     }
+
+    public static void main(String[] args) {
+        
+    }
 }

@@ -7,9 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@EnableMethodCache(basePackages = "com.lzc.jetcache.service")
+@EnableMethodCache(basePackages = "com.com.lzc.jetcache.service")
 @EnableCreateCacheAnnotation
-@MapperScan(value = "com.lzc.jetcache.dao")
+@MapperScan(value = "com.com.lzc.jetcache.dao")
 public class JetcacheApplication {
 
     public static void main(String[] args) {
