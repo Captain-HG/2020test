@@ -20,7 +20,7 @@
         <druid.version>1.1.9</druid.version>
         <mybatis.version>2.0.1</mybatis.version>
         <commons-pool2.version>2.6.2</commons-pool2.version>
-        <fastjson.version>1.2.9</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
 
     </properties>
 
